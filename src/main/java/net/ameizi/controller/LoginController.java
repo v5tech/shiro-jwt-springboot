@@ -3,6 +3,7 @@ package net.ameizi.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.common.collect.ImmutableMap;
+import net.ameizi.shiro.LoginUser;
 import net.ameizi.shiro.jwt.JwtToken;
 import net.ameizi.utils.TokenUtil;
 import org.apache.shiro.SecurityUtils;
@@ -53,11 +54,11 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public Object login(HttpServletRequest request, HttpServletResponse response, Device device) throws IOException {
+    public Object login(@RequestBody LoginUser loginUser, HttpServletRequest request, HttpServletResponse response, Device device) throws IOException {
         JSONObject jsonObject = new JSONObject();
 
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        String username = loginUser.getUsername();
+        String password = loginUser.getPassword();
 
         // 验证用户名密码成功后生成token
         String token = tokenUtil.generateToken(username, device);
@@ -97,14 +98,13 @@ public class LoginController {
             response.flushBuffer();
 
             jsonObject.put("code",200);
-            jsonObject.put("msg","认证成功!");
+            jsonObject.put("msg","success");
             jsonObject.put("token",token);
             jsonObject.put("timestamp", Calendar.getInstance().getTimeInMillis());
             return jsonObject;
         }else{
             jsonObject.put("code",403);
-            jsonObject.put("msg","认证失败");
-            jsonObject.put("token",null);
+            jsonObject.put("msg","error");
             jsonObject.put("timestamp", Calendar.getInstance().getTimeInMillis());
             return jsonObject;
         }
@@ -165,7 +165,7 @@ public class LoginController {
      * @param token
      * @return
      */
-    @RequestMapping("/token/refresh")
+    @PostMapping("/token/refresh")
     public Object refreshToken(@CookieValue(value = "token") String token) {
         JSONObject jsonObject = new JSONObject();
         String newToken = tokenUtil.refreshToken(token);

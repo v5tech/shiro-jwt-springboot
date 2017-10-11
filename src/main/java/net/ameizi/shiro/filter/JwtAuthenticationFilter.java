@@ -11,10 +11,10 @@ import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class JwtAuthenticationFilter extends AuthenticatingFilter {
 
@@ -30,12 +30,15 @@ public class JwtAuthenticationFilter extends AuthenticatingFilter {
             token = httpRequest.getParameter(TOKEN);
             // 还是获取不到再从Cookie中拿
             if(StringUtils.isEmpty(token)){
-                token = Arrays.stream(httpRequest.getCookies())
-                        .filter(ck -> "token".equals(ck.getName()))
-                        .limit(1)
-                        .findFirst()
-                        .get()
-                        .getValue();
+                Cookie[] cookies = httpRequest.getCookies();
+                if(cookies != null){
+                    for (Cookie cookie : cookies) {
+                        if(TOKEN.equals(cookie.getName())){
+                            token = cookie.getValue();
+                            break;
+                        }
+                    }
+                }
             }
         }
         return JwtToken.builder()

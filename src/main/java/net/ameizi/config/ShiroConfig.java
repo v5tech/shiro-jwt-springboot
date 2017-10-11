@@ -65,12 +65,18 @@ public class ShiroConfig {
 
         // 允许用户匿名访问/login(登录接口)
         filterChainDefinitionMap.put("/login", "anon");
+
         // 验证码允许匿名访问
-        filterChainDefinitionMap.put("/captcha*","anon");
+        filterChainDefinitionMap.put("/captcha","anon");
+        filterChainDefinitionMap.put("/api-docs","anon");
+        filterChainDefinitionMap.put("/v2/api-docs","anon");
+        filterChainDefinitionMap.put("/swagger-ui.html","anon");
+        filterChainDefinitionMap.put("/webjars/**","anon");
+        filterChainDefinitionMap.put("/swagger-resources/**","anon");
 
         filterChainDefinitionMap.put("/**", "jwt");
 
-        // filterChainDefinitionMap.put("/**","anon");
+//        filterChainDefinitionMap.put("/**","anon");
 
         shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMap);
 

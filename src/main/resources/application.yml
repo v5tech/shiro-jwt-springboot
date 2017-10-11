@@ -7,3 +7,21 @@ spring:
     joda-date-time-format: yyyy-MM-dd HH:mm:ss
     default-property-inclusion: non_null
     time-zone: GMT+8
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    password: jpdbb1387lipushdatabseredis
+
+swagger:
+  host: localhost:8080
+
+jwt:
+#  header: Authorization
+  token:
+    secret: mySecret
+#    7天
+#    expiration: 604800
+
+#    一天
+    expiration: 86400
